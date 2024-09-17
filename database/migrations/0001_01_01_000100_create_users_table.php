@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,13 +14,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+
+            $table->string('firstname', 40);
+            $table->string('middlename', 40);
+            $table->string('lastname', 40);
+
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('role', ['user', 'admin'])->default('user');
+
             $table->rememberToken();
-            $table->foreignId('current_team_id')->nullable();
-            $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();
         });
 
@@ -36,6 +41,22 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
+        });
+
+        Schema::create('user_profiles', function (Blueprint $table) {
+            $table->foreignIdFor(User::class)->primary();
+            $table->string('bio');
+            $table->date('birthdate');
+            $table->enum('gender', ['Male', 'Female']);
+            $table->string('phone_number', 20);
+            $table->string('residence');
+        });
+
+        Schema::create('user_preferences', function (Blueprint $table) {
+            $table->foreignIdFor(User::class)->primary();
+            $table->enum('gender', ['Male', 'Female'])->nullable();
+            $table->integer('minimum_age')->nullable();
+            $table->integer('maximum_age')->nullable();
         });
     }
 
