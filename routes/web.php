@@ -19,7 +19,7 @@ Route::middleware([
 Route::middleware([
     'auth:sanctum',
     'verified',
-//    'role:admin',
+    'isAdmin',
 ])->group(function () {
     Route::get('/manage/admins', [\App\Http\Controllers\AdminController::class, 'index'])->name('manage.admins');
     Route::delete('/manage/admin/delete/{user}/', [\App\Http\Controllers\AdminController::class, 'destroy'])->name('manage.admins.delete');
