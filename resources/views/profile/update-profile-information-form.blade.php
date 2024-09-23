@@ -28,7 +28,7 @@
 
                 <!-- Current Profile Photo -->
                 <div class="mt-2" x-show="! photoPreview">
-                    <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->name }}" class="rounded-full h-20 w-20 object-cover">
+                    <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->firstname }}" class="rounded-full h-20 w-20 object-cover">
                 </div>
 
                 <!-- New Profile Photo Preview -->
@@ -53,10 +53,31 @@
         @endif
 
         <!-- Name -->
+        <div class="col-span-6 sm:col-span-4 flex gap-x-2">
+            <div>
+                <x-label for="name" value="{{ __('Voornaam') }}" />
+                <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.firstname" disabled />
+            </div>
+            <div>
+                <x-label for="name" value="{{ __('Tussenvoegsel') }}" />
+                <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.middlename" disabled />
+            </div>
+            <div>
+                <x-label for="name" value="{{ __('Achternaam') }}" />
+                <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.lastname" disabled />
+            </div>
+        </div>
+
+        <!-- Birthdate -->
         <div class="col-span-6 sm:col-span-4">
-            <x-label for="name" value="{{ __('Name') }}" />
-            <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.name" required autocomplete="name" />
-            <x-input-error for="name" class="mt-2" />
+            <x-label for="birthdate" value="{{ __('Geboortedatum') }}" />
+            <x-input id="birthdate" type="text" class="mt-1 block w-full" value="{{ $this->user->profile->birthdate }}" disabled />
+        </div>
+
+        <!-- Gender -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-label for="gender" value="{{ __('Geslacht') }}" />
+            <x-input id="gender" type="text" class="mt-1 block w-full" value="{{ \App\Enums\Gender::from(strtolower($this->user->profile->gender))->getName() }}" disabled />
         </div>
 
         <!-- Email -->

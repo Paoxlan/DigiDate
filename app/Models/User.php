@@ -3,7 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\UserProfile as Profile;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -18,15 +21,20 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
 
+    public string $name;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'firstname',
+        'middlename',
+        'lastname',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -50,6 +58,11 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
+    public function profile(): HasOne
+    {
+        return $this->hasone(Profile::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -61,5 +74,14 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::retrieved(function ($user) {
+            $user->name = $user->firstname . ' ' . $user->lastname;
+        });
     }
 }

@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['user', 'admin'])->default('user');
+            $table->string('profile_photo_path')->nullable();
 
             $table->rememberToken();
             $table->timestamps();
@@ -44,7 +45,7 @@ return new class extends Migration {
 
         Schema::create('user_profiles', function (Blueprint $table) {
             $table->foreignIdFor(User::class)->primary();
-            $table->string('bio');
+            $table->string('bio')->nullable();
             $table->date('birthdate');
             $table->enum('gender', ['Male', 'Female']);
             $table->string('phone_number', 20);
