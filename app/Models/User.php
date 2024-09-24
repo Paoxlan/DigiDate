@@ -63,6 +63,11 @@ class User extends Authenticatable
         return $this->hasone(Profile::class);
     }
 
+    public function isRole(string $role): bool
+    {
+        return $this->role === $role;
+    }
+
     /**
      * Get the attributes that should be cast.
      *
