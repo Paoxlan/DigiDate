@@ -19,7 +19,13 @@
                 <p class="text-green-400 mb-4">{{ session()->get('success') }}</p>
             @endif
 
-            <table class="w-full border-gray-600 border-[2px] mt-2">
+            <div class="mt-2">
+                <a href="{{ route('manage.admin.create') }}">
+                    <x-button>Registreer admin</x-button>
+                </a>
+            </div>
+
+            <table class="w-full border-gray-600 border-[2px] mt-4">
                 <thead class="bg-zinc-700">
                 <tr class="text-left">
                     <th class="p-1 border-gray-600 border-[2px]">Naam</th>

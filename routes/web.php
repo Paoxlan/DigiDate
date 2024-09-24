@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,8 +22,10 @@ Route::middleware([
     'verified',
     'isAdmin',
 ])->group(function () {
-    Route::get('/manage/admins', [\App\Http\Controllers\AdminController::class, 'index'])->name('manage.admins');
-    Route::delete('/manage/admin/delete/{user}/', [\App\Http\Controllers\AdminController::class, 'destroy'])->name('manage.admins.delete');
+    Route::get('/manage/admins', [AdminController::class, 'index'])->name('manage.admins');
+    Route::get('/manage/admin/register', [AdminController::class, 'create'])->name('manage.admin.create');
+    Route::post('/manage/admin/register', [AdminController::class, 'store'])->name('manage.admin.store');
+    Route::delete('/manage/admin/delete/{user}/', [AdminController::class, 'destroy'])->name('manage.admins.delete');
 
     Route::get('/manage/tags', [\App\Http\Controllers\TagController::class, 'index'])->name('manage.tags');
     Route::get('/manage/tags/create', [\App\Http\Controllers\TagController::class, 'create'])->name('manage.tags.create');
