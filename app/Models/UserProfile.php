@@ -17,8 +17,4 @@ class UserProfile extends Model
         'phone_number',
         'residence'
     ];
-
-    protected $casts = [
-        'birthdate' => 'date'
-    ];
 }
