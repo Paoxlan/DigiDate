@@ -57,7 +57,7 @@
                     </tr>
 
                     @if(auth()->user() !== $user)
-                        <x-modal id="modal-delete-{{$i}}" class="px-8">
+                        <x-admin-modal id="modal-delete-{{$i}}" class="px-8">
                             <h1 class="text-4xl">Account verwijderen</h1>
                             <p class="text-lg mt-4">Weet je zeker dat je: {{ $user->firstname }} wilt verwijderen?</p>
                             <form method="POST" action="{{ route('manage.admins.delete', $user) }}">
@@ -70,7 +70,7 @@
                             <x-button class="float-end mr-2" @click="closeModal('modal-delete-{{$i}}')">
                                 Annuleren
                             </x-button>
-                        </x-modal>
+                        </x-admin-modal>
                             <?php $i++; ?>
                     @endif
 
