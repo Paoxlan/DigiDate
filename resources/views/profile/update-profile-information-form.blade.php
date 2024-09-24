@@ -68,17 +68,19 @@
             </div>
         </div>
 
-        <!-- Birthdate -->
-        <div class="col-span-6 sm:col-span-4">
-            <x-label for="birthdate" value="{{ __('Geboortedatum') }}" />
-            <x-input id="birthdate" type="text" class="mt-1 block w-full" value="{{ $this->user->profile->birthdate }}" disabled />
-        </div>
+        @if($this->user->isRole('user'))
+            <!-- Birthdate -->
+            <div class="col-span-6 sm:col-span-4">
+                <x-label for="birthdate" value="{{ __('Geboortedatum') }}" />
+                <x-input id="birthdate" type="text" class="mt-1 block w-full" value="{{ $this->user->profile->birthdate }}" disabled />
+            </div>
 
-        <!-- Gender -->
-        <div class="col-span-6 sm:col-span-4">
-            <x-label for="gender" value="{{ __('Geslacht') }}" />
-            <x-input id="gender" type="text" class="mt-1 block w-full" value="{{ \App\Enums\Gender::from(strtolower($this->user->profile->gender))->getName() }}" disabled />
-        </div>
+            <!-- Gender -->
+            <div class="col-span-6 sm:col-span-4">
+                <x-label for="gender" value="{{ __('Geslacht') }}" />
+                <x-input id="gender" type="text" class="mt-1 block w-full" value="{{ \App\Enums\Gender::from(strtolower($this->user->profile->gender))->getName() }}" disabled />
+            </div>
+        @endif
 
         <!-- Email -->
         <div class="col-span-6 sm:col-span-4">
