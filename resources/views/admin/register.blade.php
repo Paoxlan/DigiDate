@@ -12,16 +12,16 @@
                 <div class="col-span-6 sm:col-span-4 flex gap-x-2">
                     <div>
                         <x-label for="firstname" value="{{ __('Voornaam*') }}"/>
-                        <x-input id="firstname" type="text" class="mt-1 block w-full" name="firstname" required />
+                        <x-input id="firstname" type="text" class="mt-1 block w-full" name="firstname" :value="old('firstname')" required />
                         <x-input-error for="firstname" class="mt-2" />
                     </div>
                     <div>
                         <x-label for="middlename" value="{{ __('Tussenvoegsel') }}"/>
-                        <x-input id="middlename" type="text" class="mt-1 block w-full" name="middlename" />
+                        <x-input id="middlename" type="text" class="mt-1 block w-full" name="middlename" :value="old('middlename')" />
                     </div>
                     <div>
                         <x-label for="lastname" value="{{ __('Achternaam*') }}"/>
-                        <x-input id="lastname" type="text" class="mt-1 block w-full" name="lastname" required />
+                        <x-input id="lastname" type="text" class="mt-1 block w-full" name="lastname" :value="old('lastname')" required />
                         <x-input-error for="lastname" class="mt-2" />
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                 <!-- Email -->
                 <div class="mt-4">
                     <x-label for="email" value="{{ __('Email*') }}"/>
-                    <x-input id="email" type="email" class="mt-1 block w-full" name="email" required />
+                    <x-input id="email" type="email" class="mt-1 block w-full" name="email" :value="old('email')" required />
                     <x-input-error for="email" class="mt-2" />
                 </div>
 

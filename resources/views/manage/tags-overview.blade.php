@@ -46,7 +46,7 @@
                     </tr>
 
                     <x-admin-modal id="modal-delete-{{$i}}" class="px-8">
-                        <h1 class="text-4xl">Account verwijderen</h1>
+                        <h1 class="text-4xl">Tag verwijderen</h1>
                         <p class="text-lg mt-4">Weet je zeker dat je: {{ $tag->name }} wilt verwijderen?</p>
                         <form method="POST" action="{{ route('manage.tags.delete', $tag) }}">
                             @method('DELETE')
