@@ -13,14 +13,17 @@ trait PasswordValidationRules
      */
     protected function passwordRules(): array
     {
+        $passwordRule = Password::min(8);
+        if (!app()->hasDebugModeEnabled())
+            $passwordRule = $passwordRule->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols();
+
         return [
             'required',
             'string',
-            Password::min(8)
-                ->letters()
-                ->mixedCase()
-                ->numbers()
-                ->symbols(),
+            $passwordRule,
             'confirmed'
         ];
     }
