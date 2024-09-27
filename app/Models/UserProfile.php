@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class UserProfile extends Model
 {
@@ -15,6 +18,11 @@ class UserProfile extends Model
         'birthdate',
         'gender',
         'phone_number',
-        'residence'
+        'residence_id'
     ];
+
+    public function residence(): BelongsTo
+    {
+        return $this->belongsTo(Residence::class);
+    }
 }
