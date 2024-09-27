@@ -3,6 +3,7 @@
 namespace App\Actions\Fortify;
 
 use App\Enums\Gender;
+use App\Models\Residence;
 use App\Models\User;
 use App\Models\UserProfile;
 use DateTime;
@@ -53,12 +54,17 @@ class CreateNewUser implements CreatesNewUsers
             'password' => Hash::make($input['password']),
         ]);
 
+        $residenceInput = ucfirst($input['residence']);
+        $residence = Residence::firstWhere('residence', '=', $residenceInput)
+            ?? Residence::create(['residence' => $residenceInput]);
+
+
         UserProfile::create([
             'user_id' => $user->id,
             'birthdate' => $input['birthdate'],
             'gender' => $input['gender'],
             'phone_number' => $input['phone_number'],
-            'residence' => $input['residence']
+            'residence_id' => $residence->id
         ]);
 
         return $user;

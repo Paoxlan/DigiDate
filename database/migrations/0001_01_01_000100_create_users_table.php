@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Residence;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -43,13 +44,19 @@ return new class extends Migration {
             $table->integer('last_activity')->index();
         });
 
+        Schema::create('residences', function (Blueprint $table) {
+            $table->id();
+            $table->string('residence');
+            $table->timestamps();
+        });
+
         Schema::create('user_profiles', function (Blueprint $table) {
             $table->foreignIdFor(User::class)->primary();
             $table->string('bio')->nullable();
             $table->date('birthdate');
             $table->enum('gender', ['Male', 'Female']);
             $table->string('phone_number', 20);
-            $table->string('residence');
+            $table->foreignIdFor(Residence::class);
         });
 
         Schema::create('user_preferences', function (Blueprint $table) {
@@ -66,9 +73,10 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('user_profiles');
-        Schema::dropIfExists('user_preferences');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('residences');
+        Schema::dropIfExists('user_profiles');
+        Schema::dropIfExists('user_preferences');
     }
 };
