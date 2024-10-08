@@ -15,6 +15,10 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::get('/matching', [\App\Http\Controllers\MatchingController::class, 'index'])->name('matching');
+    Route::post('/matching/like/{user}', [\App\Http\Controllers\MatchingController::class, 'like'])->name('matching.like');
+    Route::post('/matching/dislike/{user}', [\App\Http\Controllers\MatchingController::class, 'dislike'])->name('matching.dislike');
 });
 
 Route::middleware([
@@ -32,3 +36,4 @@ Route::middleware([
     Route::post('/manage/tags/create', [\App\Http\Controllers\TagController::class, 'store'])->name('manage.tags.store');
     Route::delete('/manage/tags/delete/{tag}', [\App\Http\Controllers\TagController::class, 'destroy'])->name('manage.tags.delete');
 });
+
