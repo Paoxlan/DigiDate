@@ -23,6 +23,11 @@
                             {{ __('Tags manager') }}
                         </x-nav-link>
                     @endif
+                    @if(@auth()->user()->role === "user")
+                        <x-nav-link href="{{ route('matching') }}" :active="request()->routeIs('matching')">
+                            {{ __('Matching') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
