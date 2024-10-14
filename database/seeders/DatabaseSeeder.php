@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Tag;
+use App\Models\TaggedUser;
 use App\Models\Residence;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -15,6 +17,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        Tag::factory(15)->create();
+
         // Generate the admin user
         User::factory()->create([
             'firstname' => 'test',

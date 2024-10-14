@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\UserProfile as Profile;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -60,7 +61,27 @@ class User extends Authenticatable
 
     public function profile(): HasOne
     {
-        return $this->hasone(Profile::class);
+        return $this->hasOne(Profile::class);
+    }
+
+    public function preference(): HasOne
+    {
+        return $this->hasOne(UserPreference::class);
+    }
+
+    public function userTags(): HasMany
+    {
+        return $this->hasMany(TaggedUser::class);
+    }
+
+    public function getTags(): array
+    {
+        $tags = [];
+
+        foreach ($this->userTags as $userTag)
+            $tags[] = $userTag->tag;
+
+        return $tags;
     }
 
     public function isRole(string $role): bool
@@ -81,12 +102,21 @@ class User extends Authenticatable
         ];
     }
 
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(get: fn($_, array $attributes) => implode(" ",
+            array_filter(
+                \Arr::only($attributes, ['firstname', 'middlename', 'lastname'])
+            )
+        ));
+    }
+
     protected static function boot(): void
     {
         parent::boot();
 
         static::retrieved(function ($user) {
-            $user->name = $user->firstname . ' ' . $user->lastname;
+            $user->name = $user->fullname;
         });
     }
 }
