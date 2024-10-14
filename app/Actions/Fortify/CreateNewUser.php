@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Enums\Gender;
 use App\Models\Residence;
 use App\Models\User;
+use App\Models\UserPreference;
 use App\Models\UserProfile;
 use DateTime;
 use Illuminate\Support\Facades\Hash;
@@ -38,8 +39,8 @@ class CreateNewUser implements CreatesNewUsers
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
         ])->validate();
 
-        if (!Gender::tryFrom($input['gender']))
-            throw ValidationException::withMessages(['gender' => 'Geslacht is niet geldig.']);
+        $gender = Gender::tryFrom($input['gender']);
+        if (!$gender) throw ValidationException::withMessages(['gender' => 'Geslacht is niet geldig.']);
 
         $birthdate = new DateTime($input['birthdate']);
         $age = (new DateTime())->diff($birthdate)->y;
@@ -62,10 +63,17 @@ class CreateNewUser implements CreatesNewUsers
         UserProfile::create([
             'user_id' => $user->id,
             'birthdate' => $input['birthdate'],
-            'gender' => $input['gender'],
+            'gender' => $gender,
             'phone_number' => $input['phone_number'],
             'residence_id' => $residence->id
         ]);
+
+        UserPreference::create([
+            'user_id' => $user->id,
+            'gender' => $gender === Gender::Male ? Gender::Female : Gender::Male
+        ]);
+
+
 
         return $user;
     }

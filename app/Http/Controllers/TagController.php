@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tags;
+use App\Models\Tag;
 
 class TagController extends Controller
 {
     public function index()
     {
         return view('manage.tags-overview', [
-            'tags' => Tags::all(),
+            'tags' => Tag::all(),
         ]);
     }
 
@@ -24,7 +24,7 @@ class TagController extends Controller
             'name' => 'required',
         ]);
         try {
-            Tags::create([
+            Tag::create([
                 'name' => request('name'),
             ]);
         } catch (\Exception $exception) {
@@ -36,7 +36,7 @@ class TagController extends Controller
         return redirect(route('manage.tags'))->with('success', 'Tag has been successfully created.');
     }
 
-    public function destroy(Tags $tag)
+    public function destroy(Tag $tag)
     {
         $tag->delete();
 
