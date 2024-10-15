@@ -9,7 +9,7 @@
         <div
             class="gray-700 dark:text-gray-300 dark:bg-gray-800 lg:max-w-7xl w-full py-2 px-4 rounded-md grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             @foreach($users as $user)
-                @if($user->role === 'admin')
+                @if($user->isRole('admin'))
                     @continue
                 @endif
 

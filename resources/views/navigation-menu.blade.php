@@ -15,7 +15,7 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Home') }}
                     </x-nav-link>
-                    @if(@auth()->user()->role === "admin")
+                    @if(auth()->user()->isRole('admin'))
                         <x-nav-link href="{{ route('manage.admins') }}" :active="request()->routeIs('manage.admins')">
                             {{ __('Admin manager') }}
                         </x-nav-link>
@@ -23,7 +23,7 @@
                             {{ __('Tags manager') }}
                         </x-nav-link>
                     @endif
-                    @if(@auth()->user()->role === "user")
+                    @if(@auth()->user()->isRole('user'))
                         <x-nav-link href="{{ route('matching') }}" :active="request()->routeIs('matching')">
                             {{ __('Matching') }}
                         </x-nav-link>

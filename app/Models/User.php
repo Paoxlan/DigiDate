@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\Role;
 use App\Models\UserProfile as Profile;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -84,9 +85,11 @@ class User extends Authenticatable
         return $tags;
     }
 
-    public function isRole(string $role): bool
+    public function isRole(Role|string $role): bool
     {
-        return $this->role === $role;
+        if ($role instanceof Role) return $role === $this->role;
+
+        return Role::tryFrom($role) === $this->role;
     }
 
     /**
@@ -97,6 +100,7 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'role' => Role::class,
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
