@@ -7,6 +7,7 @@ use App\Models\TaggedUser;
 use App\Models\Residence;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\UserPreference;
 use App\Models\UserProfile;
 use Illuminate\Database\Seeder;
 
@@ -37,6 +38,10 @@ class DatabaseSeeder extends Seeder
             UserProfile::factory()->create([
                 'user_id' => $user->id,
                 'residence_id' => Residence::all()->random()->first()->id
+            ]);
+            UserPreference::create([
+                'user_id' => $user->id,
+                'gender' => 'female'
             ]);
         }
     }
