@@ -16,8 +16,9 @@ class DeleteUser implements DeletesUsers
             count(User::all()->where('role', '=', 'admin')) <= 1
         ) return;
 
+        if ($user->isRole('user'))
+            $user->update(['firstname' => $user->id, 'middlename' => $user->id, 'lastname' => $user->id, 'email' => $user->id, 'password' => $user->id,]);
         $user->deleteProfilePhoto();
-        $user->tokens->each->delete();
-        $user->delete();
+        $user->profile()->delete();
     }
 }
