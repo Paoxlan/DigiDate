@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Gender;
 use App\Models\Tag;
 use App\Models\TaggedUser;
 use App\Models\Residence;
@@ -41,8 +42,19 @@ class DatabaseSeeder extends Seeder
             ]);
             UserPreference::create([
                 'user_id' => $user->id,
-                'gender' => 'female'
+                'gender' => rand(0, 3) ? Gender::getRandomCase() : null
             ]);
+
+            for ($j = 0; $j < 5; $j++) {
+                $tagId = Tag::all()->random()->id;
+                while (TaggedUser::userHasTag($user, $tagId))
+                    $tagId = Tag::all()->random()->id;
+
+                TaggedUser::create([
+                    'user_id' => $user->id,
+                    'tag_id' => $tagId
+                ]);
+            }
         }
     }
 }

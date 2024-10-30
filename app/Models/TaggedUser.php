@@ -57,4 +57,11 @@ class TaggedUser extends Model
 
         return $this->getAttribute($keyName);
     }
+
+    public static function userHasTag(User $user, Tag|int $tag): bool
+    {
+        $tagId = is_int($tag) ? $tag : $tag->id;
+        return !is_null(self::where('user_id', $user->id)
+            ->where('tag_id', $tagId)->first());
+    }
 }
