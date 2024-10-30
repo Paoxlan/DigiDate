@@ -51,20 +51,22 @@ return new class extends Migration {
         });
 
         Schema::create('user_profiles', function (Blueprint $table) {
-            $table->foreignIdFor(User::class)->primary();
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->string('bio', 100)->nullable();
             $table->string('study', 40)->nullable();
             $table->date('birthdate');
             $table->enum('gender', ['Male', 'Female']);
             $table->string('phone_number', 20);
             $table->foreignIdFor(Residence::class);
+            $table->primary('user_id');
         });
 
         Schema::create('user_preferences', function (Blueprint $table) {
-            $table->foreignIdFor(User::class)->primary();
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->enum('gender', ['Male', 'Female'])->nullable();
             $table->integer('minimum_age')->nullable();
             $table->integer('maximum_age')->nullable();
+            $table->primary('user_id');
         });
     }
 

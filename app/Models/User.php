@@ -75,6 +75,14 @@ class User extends Authenticatable
         return $this->hasMany(TaggedUser::class);
     }
 
+    public function hasTag(Tag|int $tag): bool
+    {
+        return TaggedUser::userHasTag($this, $tag);
+    }
+
+    /**
+     * @return Tag[]
+     */
     public function getTags(): array
     {
         $tags = [];
