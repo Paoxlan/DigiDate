@@ -3,6 +3,8 @@
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
+require __DIR__ . '/auth.php';
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -10,6 +12,7 @@ Route::get('/', function () {
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
+    'twoFactorRequired',
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
@@ -23,6 +26,7 @@ Route::middleware([
 
 Route::middleware([
     'auth:sanctum',
+    'twoFactorRequired',
     'verified',
     'isAdmin',
 ])->group(function () {

@@ -40,13 +40,13 @@
                     <tbody>
                     <?php $i = 0; ?>
                     @foreach($users as $user)
-                        @if($user->role === 'user')
+                        @if($user->role === \App\Enums\Role::User)
                             @continue
                         @endif
                         <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $user->firstname}} {{$user->middlename}} {{$user->lastname}}</td>
                             <td class="px-6 py-4">{{ $user->email }}</td>
-                            <td class="px-6 py-4">{{ ucfirst($user->role) }}</td>
+                            <td class="px-6 py-4">{{ $user->role->name }}</td>
                             <td class="px-6 py-4">
                                 <x-modal-button for="modal-delete-{{$i}}"
                                                 class="inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md
