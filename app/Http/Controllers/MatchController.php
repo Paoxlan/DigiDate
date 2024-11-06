@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LikedUsers;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class MatchController extends Controller
 {

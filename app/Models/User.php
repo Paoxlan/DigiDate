@@ -61,27 +61,45 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
+    /**
+     * Returns the profile this user has.
+     * @return HasOne
+     */
     public function profile(): HasOne
     {
         return $this->hasOne(Profile::class);
     }
 
+    /**
+     * Returns the preferences this user has.
+     * @return HasOne
+     */
     public function preference(): HasOne
     {
         return $this->hasOne(UserPreference::class);
     }
 
+    /**
+     * Returns all UserTags this user has.
+     * @return HasMany
+     */
     public function userTags(): HasMany
     {
         return $this->hasMany(TaggedUser::class);
     }
 
+    /**
+     * Checks if this user has the specified tag.
+     * @param Tag|int $tag
+     * @return bool
+     */
     public function hasTag(Tag|int $tag): bool
     {
         return TaggedUser::userHasTag($this, $tag);
     }
 
     /**
+     * returns all tags from the user.
      * @return Tag[]
      */
     public function getTags(): array
@@ -147,13 +165,4 @@ class User extends Authenticatable
             )
         ));
     }
-
-//    protected static function boot(): void
-//    {
-//        parent::boot();
-//
-//        static::retrieved(function ($user) {
-//            $user->name = $user->fullname;
-//        });
-//    }
 }

@@ -16,12 +16,6 @@
                 @livewire('chat', ['chattingWith' => $chatting_with])
             </section>
         @endif
-{{--        <section class="flex-grow flex flex-col justify-between">--}}
-{{--            <div class="flex-grow"></div>--}}
-{{--            <div class="h-8 bg-gray-100">--}}
-
-{{--            </div>--}}
-{{--        </section>--}}
     </div>
 
 </x-app-layout>
