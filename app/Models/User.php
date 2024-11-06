@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
@@ -93,6 +94,20 @@ class User extends Authenticatable
         return $tags;
     }
 
+    /**
+     * @return User[]|Collection
+     */
+    public function getMatchedUsers(): array|Collection
+    {
+        $likedUsersMatched = LikedUsers::getLikedUsersFrom($this)
+            ->filter(function ($likedUsers) {
+                return LikedUsers::userIsMatchedWith($this, $likedUsers->likedUser);
+            });
+
+
+        return $likedUsersMatched->map(fn ($likedUsers) => $likedUsers->likedUser);
+    }
+
     public function isRole(Role|string $role): bool
     {
         if ($role instanceof Role) return $role === $this->role;
@@ -114,6 +129,16 @@ class User extends Authenticatable
         ];
     }
 
+    protected function defaultProfilePhotoUrl(): string
+    {
+
+        $name = trim(collect(explode(' ', $this->full_name))->map(function ($segment) {
+            return mb_substr($segment, 0, 1);
+        })->join(' '));
+
+        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=7F9CF5&background=EBF4FF';
+    }
+
     protected function fullName(): Attribute
     {
         return Attribute::make(get: fn($_, array $attributes) => implode(" ",
@@ -123,12 +148,12 @@ class User extends Authenticatable
         ));
     }
 
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        static::retrieved(function ($user) {
-            $user->name = $user->fullname;
-        });
-    }
+//    protected static function boot(): void
+//    {
+//        parent::boot();
+//
+//        static::retrieved(function ($user) {
+//            $user->name = $user->fullname;
+//        });
+//    }
 }

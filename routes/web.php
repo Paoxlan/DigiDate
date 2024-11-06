@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\MatchController;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php';
@@ -18,6 +19,9 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::get('/matches', [MatchController::class, 'index'])->name('matches');
+    Route::get('/matches/{user}', [MatchController::class, 'find'])->name('match.chat');
 
     Route::get('/matching', [\App\Http\Controllers\MatchingController::class, 'index'])->name('matching');
     Route::post('/matching/like/{user}', [\App\Http\Controllers\MatchingController::class, 'like'])->name('matching.like');

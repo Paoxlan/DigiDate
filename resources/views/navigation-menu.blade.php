@@ -27,6 +27,9 @@
                         <x-nav-link href="{{ route('matching') }}" :active="request()->routeIs('matching')">
                             {{ __('Matching') }}
                         </x-nav-link>
+                        <x-nav-link href="{{ route('matches') }}" :active="request()->routeIs('matches') || request()->routeIs('match.chat')">
+                            {{ __('Matches') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>

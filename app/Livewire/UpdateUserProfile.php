@@ -62,7 +62,7 @@ class UpdateUserProfile extends Component
             ->delete();
     }
 
-    public function updateProfileInformation(UpdatesUserProfileInformation $updater): ?RedirectResponse
+    public function updateProfileInformation(UpdatesUserProfileInformation $updater)
     {
         $this->resetErrorBag();
         $user = Auth::user();
@@ -112,8 +112,6 @@ class UpdateUserProfile extends Component
 
         $this->dispatch('saved');
         $this->dispatch('refresh-navigation-menu');
-
-        return null;
     }
 
     public function deleteProfilePhoto(): void
