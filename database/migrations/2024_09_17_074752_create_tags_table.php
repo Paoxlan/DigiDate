@@ -20,8 +20,8 @@ return new class extends Migration
         });
 
         Schema::create('tagged_users', function (Blueprint $table) {
-            $table->foreignIdFor(User::class);
-            $table->foreignId('tag_id');
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->foreignId('tag_id')->constrained()->cascadeOnDelete();
 
             $table->primary(['user_id', 'tag_id']);
         });
