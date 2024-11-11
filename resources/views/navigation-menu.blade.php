@@ -22,6 +22,9 @@
                         <x-nav-link href="{{ route('manage.tags') }}" :active="request()->routeIs('manage.tags')">
                             {{ __('Tags manager') }}
                         </x-nav-link>
+                        <x-nav-link href="{{ route('audit-trails') }}" :active="request()->routeIs('audit-trails')">
+                            {{ __('Audit Trail') }}
+                        </x-nav-link>
                     @endif
                     @if(@auth()->user()->isRole('user'))
                         <x-nav-link href="{{ route('matching') }}" :active="request()->routeIs('matching')">

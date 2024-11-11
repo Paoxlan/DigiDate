@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\MatchController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,5 +44,9 @@ Route::middleware([
     Route::get('/manage/tags/create', [\App\Http\Controllers\TagController::class, 'create'])->name('manage.tags.create');
     Route::post('/manage/tags/create', [\App\Http\Controllers\TagController::class, 'store'])->name('manage.tags.store');
     Route::delete('/manage/tags/delete/{tag}', [\App\Http\Controllers\TagController::class, 'destroy'])->name('manage.tags.delete');
+
+    Route::get('/audit-trails', [AuditTrailController::class, 'index'])->name('audit-trails');
+    Route::get('/audit-trail/{auditTrail}', [AuditTrailController::class, 'show'])->name('audit-trail');
+    Route::delete('/audit-trail/{auditTrail}', [AuditTrailController::class, 'destroy'])->name('audit-trail.delete');
 });
 

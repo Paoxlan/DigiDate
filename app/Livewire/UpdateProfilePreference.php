@@ -3,8 +3,11 @@
 namespace App\Livewire;
 
 use App\Enums\Gender;
+use App\Models\AuditTrail;
 use App\Models\User;
+use App\Models\UserPreference;
 use App\Models\UserProfile;
+use App\Traits\AuditTrailable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -12,6 +15,7 @@ use Livewire\Component;
 
 class UpdateProfilePreference extends Component
 {
+    use AuditTrailable;
     public $state = [];
 
     public function mount(): void
@@ -35,11 +39,29 @@ class UpdateProfilePreference extends Component
 
         $gender = Gender::tryFrom(strtolower($input['gender']));
 
-        Auth::user()->preference->update([
+        $user = Auth::user();
+        $preference = $user->preference;
+        $oldPreference = $preference->replicate();
+
+        $preference->update([
             'gender' => $gender,
             'minimum_age' => !$input['minimum_age'] ? null : $input['minimum_age'],
             'maximum_age' => !$input['maximum_age'] ? null : $input['maximum_age']
         ]);
+
+        AuditTrail::create([
+            'user_id' => $user->id,
+            'class' => UserPreference::class,
+            'method' => 'Update',
+            'old_model' => $this->auditTrailJson($oldPreference),
+            'model' => $this->auditTrailJson($preference)
+        ]);
+
+//        Auth::user()->preference->update([
+//            'gender' => $gender,
+//            'minimum_age' => !$input['minimum_age'] ? null : $input['minimum_age'],
+//            'maximum_age' => !$input['maximum_age'] ? null : $input['maximum_age']
+//        ]);
     }
 
     public function getUserProperty(): User

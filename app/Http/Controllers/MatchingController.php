@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditTrail;
 use App\Models\LikedUsers;
 use App\Models\User;
+use App\Traits\AuditTrailable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class MatchingController extends Controller
 {
+    use AuditTrailable;
+
     public function index()
     {
         $authUserId = Auth::id();
@@ -38,6 +42,12 @@ class MatchingController extends Controller
         $likedUsers->is_liked = true;
 
         $likedUsers->save();
+        AuditTrail::create([
+            'user_id' => Auth::id(),
+            'class' => LikedUsers::class,
+            'method' => 'Create',
+            'model' => $this->auditTrailJson($likedUsers)
+        ]);
 
         return redirect()->route('matching');
     }
@@ -54,8 +64,22 @@ class MatchingController extends Controller
         $dislikedUsers->is_liked = false;
 
         $dislikedUsers->save();
+        AuditTrail::create([
+            'user_id' => Auth::id(),
+            'class' => LikedUsers::class,
+            'method' => 'Create',
+            'model' => $this->auditTrailJson($dislikedUsers)
+        ]);
 
         return redirect()->route('matching');
+    }
+
+    protected function getHiddenAuditTrailAttributes(): array
+    {
+        return [
+            'id',
+            'updated_at'
+        ];
     }
 }
 

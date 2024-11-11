@@ -3,10 +3,12 @@
 namespace App\Actions\Fortify;
 
 use App\Enums\Gender;
+use App\Models\AuditTrail;
 use App\Models\Residence;
 use App\Models\User;
 use App\Models\UserPreference;
 use App\Models\UserProfile;
+use App\Traits\AuditTrailable;
 use DateTime;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -17,7 +19,7 @@ use Laravel\Jetstream\Jetstream;
 
 class CreateNewUser implements CreatesNewUsers
 {
-    use PasswordValidationRules;
+    use PasswordValidationRules, AuditTrailable;
 
     /**
      * Validate and create a newly registered user.
@@ -56,11 +58,18 @@ class CreateNewUser implements CreatesNewUsers
         ]);
 
         $residenceInput = ucfirst($input['residence']);
-        $residence = Residence::firstWhere('residence', '=', $residenceInput)
-            ?? Residence::create(['residence' => $residenceInput]);
 
+        $residence = Residence::firstWhere('residence', '=', $residenceInput);
+        if (!$residence) {
+            $residence = Residence::create(['residence' => $residenceInput]);
+            AuditTrail::create([
+                'class' => Residence::class,
+                'method' => 'Create',
+                'model' => $this->auditTrailJson($residence)
+            ]);
+        }
 
-        UserProfile::create([
+        $userProfile = UserProfile::create([
             'user_id' => $user->id,
             'birthdate' => $input['birthdate'],
             'gender' => $gender,
@@ -68,13 +77,27 @@ class CreateNewUser implements CreatesNewUsers
             'residence_id' => $residence->id
         ]);
 
-        UserPreference::create([
+        $userPreferences = UserPreference::create([
             'user_id' => $user->id,
             'gender' => $gender === Gender::Male ? Gender::Female : Gender::Male
         ]);
 
-
+        AuditTrail::create([
+            'user_id' => $user->id,
+            'method' => 'Create',
+            'class' => User::class,
+            'model' => $this->auditTrailJson([$user, $userProfile, $userPreferences])
+        ]);
 
         return $user;
+    }
+
+    protected function getHiddenAuditTrailAttributes(): array
+    {
+        return [
+            'user_id',
+            'profile_photo_url',
+            'updated_at'
+        ];
     }
 }
