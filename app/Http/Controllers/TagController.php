@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditTrail;
 use App\Models\Tag;
+use App\Traits\AuditTrailable;
+use Exception;
 
 class TagController extends Controller
 {
+    use AuditTrailable;
+
     public function index()
     {
         return view('manage.tags-overview', [
@@ -24,12 +29,20 @@ class TagController extends Controller
             'name' => 'required',
         ]);
         try {
-            Tag::create([
+            $tag = Tag::create([
                 'name' => request('name'),
             ]);
-        } catch (\Exception $exception) {
+
+            AuditTrail::create([
+                'user_id' => auth()->id(),
+                'class' => Tag::class,
+                'method' => 'Create',
+                'model' => $this->auditTrailJson($tag)
+            ]);
+
+        } catch (Exception) {
             return back()->withErrors([
-                'error' => 'Deze tag bestaald al!',
+                'error' => 'Deze tag bestaat al!',
             ]);
         }
 
@@ -38,6 +51,13 @@ class TagController extends Controller
 
     public function destroy(Tag $tag)
     {
+        AuditTrail::create([
+            'user_id' => auth()->id(),
+            'class' => Tag::class,
+            'method' => 'Delete',
+            'model' => $this->auditTrailJson($tag)
+        ]);
+
         $tag->delete();
 
         return back()->with('success', 'Tag has been successfully deleted.');

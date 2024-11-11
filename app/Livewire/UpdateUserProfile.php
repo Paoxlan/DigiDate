@@ -3,9 +3,12 @@
 namespace App\Livewire;
 
 use App\Enums\Gender;
+use App\Models\AuditTrail;
+use App\Models\Residence;
 use App\Models\Tag;
 use App\Models\TaggedUser;
 use App\Models\User;
+use App\Traits\AuditTrailable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -17,7 +20,7 @@ use Livewire\WithFileUploads;
 
 class UpdateUserProfile extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, AuditTrailable;
 
     public $state = [];
     public $photo;
@@ -44,12 +47,19 @@ class UpdateUserProfile extends Component
         $user = Auth::user();
         if (!$user) return;
 
-        TaggedUser::where('user_id', $user->id)
+        $taggedUser = TaggedUser::where('user_id', $user->id)
             ->where('tag_id', $tag->id)
             ->firstOrCreate([
                 'user_id' => $user->id,
                 'tag_id' => $tag->id
             ]);
+
+        AuditTrail::create([
+            'user_id' => $user->id,
+            'class' => TaggedUser::class,
+            'method' => 'Create',
+            'model' => $this->auditTrailJson($taggedUser)
+        ]);
     }
 
     public function removeTag(Tag $tag): void
@@ -57,15 +67,27 @@ class UpdateUserProfile extends Component
         $user = Auth::user();
         if (!$user) return;
 
-        TaggedUser::where('user_id', $user->id)
-            ->where('tag_id', $tag->id)
-            ->delete();
+        $taggedUser = TaggedUser::where('user_id', $user->id)
+            ->where('tag_id', $tag->id)->first();
+        if (!$taggedUser) return;
+
+        AuditTrail::create([
+            'user_id' => $user->id,
+            'class' => TaggedUser::class,
+            'method' => 'Delete',
+            'model' => $this->auditTrailJson($taggedUser)
+        ]);
+
+        $taggedUser->delete();
     }
 
     public function updateProfileInformation(UpdatesUserProfileInformation $updater)
     {
         $this->resetErrorBag();
         $user = Auth::user();
+
+        $oldUser = $user->replicate();
+        $oldProfile = null;
 
         Validator::make($this->state, ['email' => [
             'required',
@@ -82,6 +104,7 @@ class UpdateUserProfile extends Component
                 : ['email' => $this->state['email']]
         );
 
+        $profile = null;
         if ($user->isRole('user')) {
             Validator::make($this->state, [
                 'bio' => ['nullable', 'string', 'max:100'],
@@ -93,10 +116,21 @@ class UpdateUserProfile extends Component
             if (!Gender::tryFrom(strtolower($this->state['gender']))) abort(400);
 
             $profile = $user->profile;
+            $oldProfile = $profile->replicate();
 
-            $residence = $profile->residence
-                ->where('residence', $this->state['residence'])
-                ->firstOrCreate(['residence' => $this->state['residence']]);
+//            $residence = $profile->residence
+//                ->where('residence', $this->state['residence'])
+//                ->firstOrCreate(['residence' => $this->state['residence']]);
+
+            $residence = Residence::firstWhere('residence', '=', $this->state['residence']);
+            if (!$residence) {
+                $residence = Residence::create(['residence' => $this->state['residence']]);
+                AuditTrail::create([
+                    'class' => Residence::class,
+                    'method' => 'Create',
+                    'model' => $this->auditTrailJson($residence)
+                ]);
+            }
 
             $user->profile->update([
                 'bio' => $this->state['bio'],
@@ -105,6 +139,14 @@ class UpdateUserProfile extends Component
                 'gender' => $this->state['gender']
             ]);
         }
+
+        AuditTrail::create([
+            'user_id' => $user->id,
+            'class' => User::class,
+            'method' => 'Update',
+            'old_model' => $this->auditTrailJson(array_filter([$oldUser, $oldProfile])),
+            'model' => $this->auditTrailJson(array_filter([$user, $profile]))
+        ]);
 
         if (isset($this->photo)) {
             return redirect()->route('profile.show');
